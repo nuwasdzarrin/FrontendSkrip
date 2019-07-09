@@ -1,139 +1,29 @@
 // App.vue
 
 <template>
-  <div id="app" class="container-fluid">
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <a class="navbar-brand" href="#">
-        <img
-          src="https://v4-alpha.getbootstrap.com/assets/brand/bootstrap-solid.svg"
-          width="30"
-          height="30"
-          class="d-inline-block align-top"
-          alt
-        >
-        <span class="menu-collapsed">Digital Signature</span>
-      </a>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <router-link :to="{ name: 'Create' }" class="nav-link">Add Item</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link :to="{ name: 'Index' }" class="nav-link">All Items</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link :to="{ name: 'ViewPDF' }" class="nav-link">View PDF</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link :to="{ name: 'UploadPDF' }" class="nav-link">Upload PDF</router-link>
-          </li>
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              id="navbarDropdown"
-              role="button"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >Dropdown</a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Something else here</a>
+  <div id="app">
+    <router-view v-if="$router.currentRoute.name=='Login'"></router-view>
+    <template v-else>
+      <app-header></app-header>
+      <div class="row">
+        <app-sidebar></app-sidebar>
+        <div class="col">
+          <transition name="fade">
+            <div class="gap">
+              <router-view></router-view>
             </div>
-          </li>
-        </ul>
-        <form class="form-inline my-2 my-lg-0">
-          <input
-            class="form-control mr-sm-2"
-            type="search"
-            placeholder="Search"
-            aria-label="Search"
-          >
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
+          </transition>
+        </div>
       </div>
-    </nav>
-
-    <div class="row">
-      <div id="sidebar-container" class="sidebar-expanded d-none d-md-block">
-        <ul class="list-group">
-          <li
-            class="list-group-item sidebar-separator-title text-muted d-flex align-items-center menu-collapsed"
-          >
-            <small>MAIN MENU</small>
-          </li>
-          <a
-            href="#submenu1"
-            data-toggle="collapse"
-            aria-expanded="false"
-            class="bg-dark list-group-item list-group-item-action flex-column align-items-start"
-          >
-            <div class="d-flex w-100 justify-content-start align-items-center">
-              <span class="fa fa-dashboard fa-fw mr-3"></span>
-              <span class="menu-collapsed">Dashboard</span>
-              <span class="submenu-icon ml-auto"></span>
-            </div>
-          </a>
-          <div id="submenu1" class="collapse sidebar-submenu">
-            <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
-              <span class="menu-collapsed">Charts</span>
-            </a>
-            <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
-              <span class="menu-collapsed">Reports</span>
-            </a>
-            <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
-              <span class="menu-collapsed">Tables</span>
-            </a>
-          </div>
-          <a
-            href="#submenu2"
-            data-toggle="collapse"
-            aria-expanded="false"
-            class="bg-dark list-group-item list-group-item-action flex-column align-items-start"
-          >
-            <div class="d-flex w-100 justify-content-start align-items-center">
-              <span class="fa fa-user fa-fw mr-3"></span>
-              <span class="menu-collapsed">Profile</span>
-              <span class="submenu-icon ml-auto"></span>
-            </div>
-          </a>
-          <div id="submenu2" class="collapse sidebar-submenu">
-            <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
-              <span class="menu-collapsed">Settings</span>
-            </a>
-            <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
-              <span class="menu-collapsed">Password</span>
-            </a>
-          </div>
-        </ul>
-      </div>
-      <div class="col">
-        <transition name="fade">
-          <div class="gap">
-            <router-view></router-view>
-          </div>
-        </transition>
-      </div>
-    </div>
-    <div class="footer">copyright digital signature 2019</div>
+      <app-footer></app-footer>
+    </template>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  
+}
 </script>
 
 <style>
@@ -218,9 +108,7 @@ export default {};
   color: white;
 }
 
-.footer {
-  background-color: #343a40;
+.main-menu {
   color: white;
-  text-align: center;
 }
 </style>

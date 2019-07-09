@@ -167,7 +167,7 @@ export default {
     async sendFile() {
       const formData = new FormData();
       formData.append("file", this.PDFs.file);
-      // axios.post("http://localhost:58187/api/uploadpdf", formData{
+      // axios.post("http://localhost:58187/api/uploadpdf", formData,{
       //   headers: {
       //     "authorization":"Bearer ",
       //   }

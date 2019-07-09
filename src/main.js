@@ -1,66 +1,31 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router';
+import Vue from 'vue';
+import App from './App.vue';
 import VueAxios from 'vue-axios';
 import axios from 'axios';
-import NProgress from 'nprogress';
+// import BootstrapVue from 'bootstrap-vue'
+import {store} from  './stores/store';
 
-import App from './App.vue';
-import Create from './components/Create.vue';
-import Edit from './components/Edit.vue';
-import Index from './components/Index.vue';
-import ViewPDF from './components/ViewPDF.vue';
-import UploadPDF from './components/UploadPDF.vue';
+//import BootstrapVue from 'bootstrap-vue'
+
+import router from './routers/router';
+import header from './layouts/header';
+import sidebar from './layouts/sidebar';
+import footer from './layouts/footer';
 
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '../node_modules/nprogress/nprogress.css';
 
-Vue.use(VueRouter);
+// Vue.use(VueRouter);
+Vue.component('app-header',header);
+Vue.component('app-sidebar', sidebar);
+Vue.component('app-footer',footer);
 Vue.use(VueAxios, axios);
+// Vue.use(BootstrapVue);
 
 Vue.config.productionTip = false
 
-const routes = [
-  {
-    name: 'Create',
-    path: '/create',
-    component: Create
-  },
-  {
-    name: 'Edit',
-    path: '/edit',
-    component: Edit
-  },
-  {
-    name: 'Index',
-    path: '/index',
-    component: Index
-  },
-  {
-    name: 'ViewPDF',
-    path: '/viewpdf',
-    component: ViewPDF
-  },
-  {
-    name: 'UploadPDF',
-    path: '/uploadpdf',
-    component: UploadPDF
-  },
-];
-
-const router = new VueRouter({ mode: 'history', routes: routes });
-
-router.beforeResolve((to, from, next) => {
-  if (to.name) {
-      NProgress.start()
-  }
-  next()
-});
-
-router.afterEach(() => {
-  NProgress.done()
-});
-
 new Vue({
   render: h => h(App),
-  router
+  router,
+  store,
 }).$mount('#app')
