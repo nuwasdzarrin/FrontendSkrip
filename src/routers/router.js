@@ -10,6 +10,8 @@ import UploadPDF from '../components/UploadPDF.vue';
 
 import Login from '../pages/logins/loogin';
 import Profile from '../pages/profiles/Profile';
+import signPic from '../pages/profiles/SignPic';
+import checking from '../pages/profiles/Checking';
 
 import landingIssuer from '../pages/issuers/LandingIssuer';
 import signIssuer from '../pages/issuers/SignIssuer';
@@ -30,6 +32,16 @@ const routes = [
       name: 'Profile',
       path: '/profile',
       component: Profile
+    },
+    {
+      name: 'SignPic',
+      path: '/signpic',
+      component: signPic
+    },
+    {
+      name: 'Checking',
+      path: '/check',
+      component: checking
     },
     {
       name: 'Create',

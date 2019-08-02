@@ -31,8 +31,7 @@
     </div>
 </template>
 <script>
-import { APIENDPOINT, getHeader } from "../../config/app.config";
-import { session } from '../../constants'
+import { APIENDPOINT, getHeader } from "../../config/app.config"
 import axios from 'axios';
 export default {
     data(){
@@ -41,12 +40,12 @@ export default {
         }
     },
     created: function() {
-        const userId = JSON.parse(session).userId
+        const userId = JSON.parse(window.localStorage.getItem('lbUser')).userId
         axios.get(APIENDPOINT + "/sign?issuerId=" + userId, getHeader())
         .then((res)=>{
             this.items = res.data
         }). catch((err)=>{
-            console.log(err);
+            throw err
         })
     }
 }

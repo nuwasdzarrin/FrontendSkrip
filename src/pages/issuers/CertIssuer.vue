@@ -56,7 +56,6 @@
 </template>
 <script>
 import { APIENDPOINT, getHeader } from "../../config/app.config";
-import { session } from "../../constants";
 import axios from "axios";
 export default {
   data() {
@@ -81,7 +80,7 @@ export default {
       this.Certifs.errCert = false;
     },
     sendCert() {
-      const userId = JSON.parse(session).userId
+      const userId = JSON.parse(window.localStorage.getItem('lbUser')).userId
       const formCert = new FormData();
       formCert.append("cert", this.Certifs.cert);
       axios.post(
@@ -102,7 +101,7 @@ export default {
     }
   },
   created: function() {
-        const userId = JSON.parse(session).userId
+        const userId = JSON.parse(window.localStorage.getItem('lbUser')).userId
         axios
           .get(APIENDPOINT + "/uploadcert?memberId=" + userId, getHeader())
           .then(resp => {
@@ -112,7 +111,6 @@ export default {
             throw err
           });
     }
-
 };
 </script>
 <style>

@@ -17,7 +17,6 @@
 
 <script>
 import { APIENDPOINT, getHeader } from "../../config/app.config";
-import { session } from '../../constants';
 import axios from "axios";
 
 export default {

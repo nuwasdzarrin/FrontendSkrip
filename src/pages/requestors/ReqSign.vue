@@ -69,7 +69,6 @@
                   :value="i.memberId"
                 >{{ i.firstName + " " + i.lastName }}</option>
               </select>
-              <p>{{ Issuers.selectIssuer }}</p>
             </div>
             <div class="form-group">
               <label for="label">author :</label>
@@ -112,7 +111,6 @@
 
 <script>
 import { APIENDPOINT, getHeader } from "../../config/app.config";
-import { session } from "../../constants";
 import axios from "axios";
 export default {
   data() {
@@ -155,7 +153,7 @@ export default {
       formData.append("file", this.PDFs.file);
       try {
         var responPDF = await axios.post(
-          "http://localhost:58187/api/uploadpdf",
+          "http://localhost:58187/api/pdf/uploadPDF",
           formData,
           getHeader()
         );
@@ -164,16 +162,15 @@ export default {
         this.PDFs.message = "File has been Uploaded";
         this.PDFs.file = "";
         this.PDFs.error = false;
-        console.log(responPDF);
       } catch (err) {
         this.PDFs.message = "Something went wrong";
         this.PDFs.error = true;
-        console.log(err);
+        throw err
       }
     },
 
     postSign() {
-      const authUser = JSON.parse(session);
+      const authUser = JSON.parse(window.localStorage.getItem('lbUser'));
       let newSigns = {
         author: this.Signs.author,
         title: this.Signs.title,
@@ -192,8 +189,6 @@ export default {
           getHeader()
         )
         .then(res => {
-          // eslint-disable-next-line
-          console.log(res);
           this.Responses.signStat = false;
           this.Responses.resSign = "request has been send";
           this.Responses.status = "waiting for approval";
@@ -206,8 +201,7 @@ export default {
           this.Issuers.selectIssuer = "";
         })
         .catch(err => {
-          // eslint-disable-next-line
-          console.log(err);
+          throw err;
           this.Responses.signStat = true;
         });
     }
@@ -216,11 +210,10 @@ export default {
     axios
       .get(APIENDPOINT + "/member/getissuer", getHeader())
       .then(res => {
-        console.log(res);
         this.Issuers.allIssuer = res.data;
       })
       .catch(err => {
-        console.log(err);
+        throw err
       });
   }
 };

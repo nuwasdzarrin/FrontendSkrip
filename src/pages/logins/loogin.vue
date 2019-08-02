@@ -3,11 +3,13 @@
     <div id="formContent">
       <!-- Tabs Titles -->
       <div class="fadeIn first">
-        <!-- <img
-          src="https://v4-alpha.getbootstrap.com/assets/brand/bootstrap-solid.svg"
+        <img
+          :src="require('@/assets/logoDS.png')"
           id="icon"
           alt="User Icon"
-        /> -->
+          height="50px"
+          width="50px"
+        />
       </div>
       <div id="formHeader">
         <h4>Digital signature login</h4>
@@ -30,7 +32,6 @@
 <script>
 // import loginService from './LoginService.js';
 import { APIENDPOINT, getHeader } from "../../config/app.config";
-import { session } from '../../constants'
 import axios from "axios";
 export default {
   data() {
@@ -75,19 +76,19 @@ export default {
                   app.$router.push("/requestor");
                 }
             }).catch((err)=>{
-                console.log(err)
+                throw err
             })
           } else {
             app.$store.state.isLoggedIn = false;
           }
         })
         .catch(function(err) {
-          console.log(err);
+          throw err
         });
     },
     loginAuth: function() {
       var app = this;
-      const status = JSON.parse(session)
+      const status = JSON.parse(window.localStorage.getItem('lbUser'))
       const rolee = JSON.parse(status.data.role)
       if (status == null || status == undefined) {
         app.$router.push("/login");

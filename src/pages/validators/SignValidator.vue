@@ -76,7 +76,6 @@
 
 <script>
 import { APIENDPOINT, getHeader } from "../../config/app.config";
-import { session } from "../../constants";
 import axios from "axios";
 export default {
   data() {
@@ -124,14 +123,12 @@ export default {
         this.Signs.email        = "";
       })
       .catch((err)=>{
-        // eslint-disable-next-line
-        throw err
-        this.Responses.actStat = false
+        throw err;
+        this.Responses.actStat = false;
       });
     }
   },
   created() {
-    const userId = JSON.parse(session).userId;
     axios
       .get(APIENDPOINT + "/validator/" + this.$route.params.id, getHeader())
       .then(res => {
@@ -159,8 +156,8 @@ export default {
           throw err
         })
       })
-      .catch(err => {
-        console.log(err);
+      .catch((err) => {
+        throw err
       });
   }
 };

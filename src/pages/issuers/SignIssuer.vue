@@ -128,7 +128,6 @@
 
 <script>
 import { APIENDPOINT, getHeader } from "../../config/app.config";
-import { session } from "../../constants";
 import axios from "axios";
 export default {
   name: "UploadPDF",
@@ -190,7 +189,7 @@ export default {
       }
     },
     postSign() {
-      const userId = JSON.parse(session).userId;
+      const userId = JSON.parse(window.localStorage.getItem('lbUser')).userId;
       let newSigns = {
         author: this.Signs.author,
         title: this.Signs.title,
@@ -233,7 +232,7 @@ export default {
     }
   },
   created() {
-    const userId = JSON.parse(session).userId;
+    const userId = JSON.parse(window.localStorage.getItem('lbUser')).userId;
     axios
       .get(APIENDPOINT + "/uploadcert?memberId=" + userId, getHeader())
       .then(resp => {

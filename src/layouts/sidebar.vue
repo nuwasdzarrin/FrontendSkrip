@@ -15,9 +15,8 @@
         class="bg-dark list-group-item list-group-item-action flex-column align-items-start"
       >
         <div class="d-flex w-100 justify-content-start align-items-center">
-          <span class="fa fa-dashboard fa-fw mr-3"></span>
+          <span class="fa fa-tachometer-alt fa-fw mr-3"></span>
           <span class="menu-collapsed">Dashboard</span>
-          <span class="submenu-icon ml-auto"></span>
         </div>
       </router-link>
       <!-- below to add cert issuer -->
@@ -31,7 +30,20 @@
         <div class="d-flex w-100 justify-content-start align-items-center">
           <span class="fa fa-certificate fa-fw mr-3"></span>
           <span class="menu-collapsed">Cert</span>
-          <span class="submenu-icon ml-auto"></span>
+        </div>
+      </router-link>
+
+      <!-- below to add img sign issuer -->
+      <router-link
+        :to="{ name: 'SignPic' }"
+        v-if="role=='Issuer'"
+        data-toggle="collapse"
+        aria-expanded="false"
+        class="bg-dark list-group-item list-group-item-action flex-column align-items-start"
+      >
+        <div class="d-flex w-100 justify-content-start align-items-center">
+          <span class="fa fa-image fa-fw mr-3"></span>
+          <span class="menu-collapsed">Pic Sign</span>
         </div>
       </router-link>
       
@@ -46,7 +58,6 @@
         <div class="d-flex w-100 justify-content-start align-items-center">
           <span class="fa fa-edit fa-fw mr-3"></span>
           <span class="menu-collapsed">Sign</span>
-          <span class="submenu-icon ml-auto"></span>
         </div>
       </router-link>
       <!-- below for sign validator -->
@@ -60,7 +71,6 @@
         <div class="d-flex w-100 justify-content-start align-items-center">
           <span class="fa fa-edit fa-fw mr-3"></span>
           <span class="menu-collapsed">Sign</span>
-          <span class="submenu-icon ml-auto"></span>
         </div>
       </router-link>
       <!-- below for Request Sign -->
@@ -74,7 +84,6 @@
         <div class="d-flex w-100 justify-content-start align-items-center">
           <span class="fa fa-edit fa-fw mr-3"></span>
           <span class="menu-collapsed">Sign</span>
-          <span class="submenu-icon ml-auto"></span>
         </div>
       </router-link>
       <!-- below for profile -->
@@ -88,7 +97,6 @@
         <div class="d-flex w-100 justify-content-start align-items-center">
           <span class="fa fa-user fa-fw mr-3"></span>
           <span class="menu-collapsed">Profile</span>
-          <span class="submenu-icon ml-auto"></span>
         </div>
       </router-link>
     </ul>

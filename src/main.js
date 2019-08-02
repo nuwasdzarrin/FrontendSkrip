@@ -1,8 +1,7 @@
 import Vue from 'vue';
 import App from './App.vue';
-import VueAxios from 'vue-axios';
+import VueSignature from 'vue-signature-pad';
 import axios from 'axios';
-// import BootstrapVue from 'bootstrap-vue'
 import {store} from  './stores/store';
 
 //import BootstrapVue from 'bootstrap-vue'
@@ -19,8 +18,8 @@ import '../node_modules/nprogress/nprogress.css';
 Vue.component('app-header',header);
 Vue.component('app-sidebar', sidebar);
 Vue.component('app-footer',footer);
-Vue.use(VueAxios, axios);
-// Vue.use(BootstrapVue);
+Vue.use(axios);
+Vue.use(VueSignature);
 
 Vue.config.productionTip = false
 
