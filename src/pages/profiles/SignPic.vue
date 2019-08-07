@@ -65,7 +65,7 @@ export default {
       // console.log("ini isi file dari data: "+jadi);
       axios
         .post(
-          APIENDPOINT + "/uploadpicsign",
+          APIENDPOINT + "/picture/uploadPictureSign",
           {
             basePic: dataj,
             namePic: this.namePic+".png",
@@ -85,7 +85,7 @@ export default {
   created: function() {
     const memberId = JSON.parse(window.localStorage.getItem("lbUser")).userId;
     axios
-      .get(APIENDPOINT + "/uploadpicsign?memberId=" + memberId, getHeader())
+      .get(APIENDPOINT + "/picture/getPictureSign?memberId=" + memberId, getHeader())
       .then(resp => {
         this.pic = resp.data;
       })

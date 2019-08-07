@@ -10,6 +10,7 @@
                 <th>Title</th>
                 <th>Reason</th>
                 <th>Status</th>
+                <th>Control</th>
             </tr>
             </thead>
             <tbody>
@@ -19,6 +20,13 @@
                     <td>{{ i.title }}</td>
                     <td>{{ i.reason }}</td>
                     <td>{{ i.status }}</td>
+                    <td>
+                        <router-link 
+                        :to="{ name: 'DetailRequest', params: { id: i.id }}" 
+                        class="btn btn-primary">
+                        Detail
+                        </router-link>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -35,7 +43,7 @@ export default {
     },
     created: function() {
         const userId = JSON.parse(window.localStorage.getItem('lbUser')).userId
-        axios.get(APIENDPOINT + "/reqsign/" + userId, getHeader())
+        axios.get(APIENDPOINT + "/requestor/sign?memberId=" + userId, getHeader())
         .then((res)=>{
             this.items = res.data
         }). catch((err)=>{

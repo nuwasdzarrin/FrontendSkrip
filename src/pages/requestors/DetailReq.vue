@@ -1,8 +1,6 @@
-// UploadPDF.vue
-
 <template>
   <div>
-      <h4>Sign PDF by Validator</h4>
+      <h4>Detail Request Signature</h4>
     
     <div class="row row-second">
       <div class="col-sm-8">
@@ -43,32 +41,6 @@
               <li class="list-group-item">Status : {{ PDFs.status }}</li>
           </div>
         </div>
-        <br>
-        <div class="card">
-          <div class="card-header">
-            <h5>Actions</h5>
-          </div>
-          <div class="card-body">
-            <select
-              v-model="PDFs.status"
-              name="cert"
-              id="cert"
-              class="form-control"
-              tabindex="12"
-            >
-              <option :value="'approve'">Approve</option>
-              <option :value="'reject'">Reject</option>
-            </select>
-          </div>
-          <div class="card-body">
-            <button
-                @click="postStatus"
-                class="btn btn-success"
-                type="submit"
-                value="Sign"
-              >Chenge Status</button>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -106,32 +78,11 @@ export default {
     };
   },
   methods: {
-    postStatus() {
-      let newSigns = {
-        status: this.PDFs.status
-      }
-      axios.put(APIENDPOINT + "/validator/updateStatus?id=" + this.Responses.IdSign, newSigns, getHeader())
-      .then(res => {
-        // eslint-disable-next-line
-        console.log(res);
-        this.Responses.actStat = true;
-        this.Responses.resAct = "Successfull";
-        this.Signs.author       = "";
-        this.Signs.title        = "";
-        this.Signs.subject      = "";
-        this.Signs.keyword      = "";
-        this.Signs.reason       = "";
-        this.Signs.email        = "";
-      })
-      .catch((err)=>{
-        throw err;
-        this.Responses.actStat = false;
-      });
-    }
+    
   },
   created() {
     axios
-      .get(APIENDPOINT + "/validator/sign/detail?id=" + this.$route.params.id, getHeader())
+      .get(APIENDPOINT + "/requestor/sign/detail?id=" + this.$route.params.id, getHeader())
       .then(res => {
         this.Signs.author = res.data.author;
         this.Signs.title = res.data.title;
@@ -144,8 +95,8 @@ export default {
         this.Responses.issuerId = res.data.issuerId;
         this.Responses.reqId = res.data.requestorId;
         this.PDFs.status = res.data.status;
-        if (res.data.status == 'request'){
-          this.url = "http://localhost:58187/api/pdf/getPDF?nameFile=sign_" + res.data.pdfName;
+        if (res.data.status == 'sign'){
+          this.url = "http://localhost:58187/api/pdf/getSignPDF?signFile=sign_" + res.data.pdfName;
         } else {
           this.url = "http://localhost:58187/api/pdf/getPDF?nameFile=" + res.data.pdfName;
         }

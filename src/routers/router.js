@@ -23,6 +23,8 @@ import signValidator from '../pages/validators/SignValidator';
 
 import landingRequestor from '../pages/requestors/LandingRequestor';
 import reqSign from '../pages/requestors/ReqSign';
+import SignNReq from '../pages/requestors/SignNReq';
+import detailReq from '../pages/requestors/DetailReq';
 
 
 Vue.use(VueRouter);
@@ -107,15 +109,9 @@ const routes = [
       }
     },
     {
-      name: 'CertIssuer',
-      path: '/issuer/cert',
-      component: certIssuer,
-      meta: {
-        requiresAuth  : true,
-        issuerAuth    : true,
-        validatorAuth : false,
-        requestorAuth : false
-      }
+      name: 'Cert',
+      path: '/cert',
+      component: certIssuer
     },
     {
       name: 'LandingValidator',
@@ -154,6 +150,28 @@ const routes = [
       name: 'ReqSign',
       path: '/requestor/upload',
       component: reqSign,
+      meta: {
+        requiresAuth  : true,
+        issuerAuth    : false,
+        validatorAuth : false,
+        requestorAuth : true
+      }
+    },
+    {
+      name: 'SignNReq',
+      path: '/requestor/req-sign',
+      component: SignNReq,
+      meta: {
+        requiresAuth  : true,
+        issuerAuth    : false,
+        validatorAuth : false,
+        requestorAuth : true
+      }
+    },
+    {
+      name: 'DetailRequest',
+      path: '/requestor/detail/:id',
+      component: detailReq,
       meta: {
         requiresAuth  : true,
         issuerAuth    : false,

@@ -21,8 +21,8 @@
       </router-link>
       <!-- below to add cert issuer -->
       <router-link
-        :to="{ name: 'CertIssuer' }"
-        v-if="role=='Issuer'"
+        :to="{ name: 'Cert' }"
+        v-if="role=='Issuer'||role=='Requestor'"
         data-toggle="collapse"
         aria-expanded="false"
         class="bg-dark list-group-item list-group-item-action flex-column align-items-start"
@@ -36,7 +36,7 @@
       <!-- below to add img sign issuer -->
       <router-link
         :to="{ name: 'SignPic' }"
-        v-if="role=='Issuer'"
+        v-if="role=='Issuer'||role=='Requestor'"
         data-toggle="collapse"
         aria-expanded="false"
         class="bg-dark list-group-item list-group-item-action flex-column align-items-start"
@@ -83,7 +83,20 @@
       >
         <div class="d-flex w-100 justify-content-start align-items-center">
           <span class="fa fa-edit fa-fw mr-3"></span>
-          <span class="menu-collapsed">Sign</span>
+          <span class="menu-collapsed">Request</span>
+        </div>
+      </router-link>
+      <!-- below for Request n Sign -->
+      <router-link
+        :to="{ name: 'SignNReq' }"
+        v-if="role=='Requestor'"
+        data-toggle="collapse"
+        aria-expanded="false"
+        class="bg-dark list-group-item list-group-item-action flex-column align-items-start"
+      >
+        <div class="d-flex w-100 justify-content-start align-items-center">
+          <span class="fa fa-edit fa-fw mr-3"></span>
+          <span class="menu-collapsed">Sign n Req</span>
         </div>
       </router-link>
       <!-- below for profile -->

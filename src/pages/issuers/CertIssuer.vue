@@ -84,7 +84,7 @@ export default {
       const formCert = new FormData();
       formCert.append("cert", this.Certifs.cert);
       axios.post(
-          APIENDPOINT + "/uploadcert?memberId=" + userId,
+          APIENDPOINT + "/cert/uploadCert?memberId=" + userId,
           formCert,
           getHeader()
         ).then((res)=>{
@@ -103,7 +103,7 @@ export default {
   created: function() {
         const userId = JSON.parse(window.localStorage.getItem('lbUser')).userId
         axios
-          .get(APIENDPOINT + "/uploadcert?memberId=" + userId, getHeader())
+          .get(APIENDPOINT + "/cert/getCert?memberId=" + userId, getHeader())
           .then(resp => {
             this.Certs.allCert = resp.data
           })

@@ -44,7 +44,7 @@ export default {
         }
     },
     created: function() {
-        axios.get(APIENDPOINT + "/validator", getHeader())
+        axios.get(APIENDPOINT + "/validator/sign", getHeader())
         .then((res)=>{
             this.items = res.data
         }). catch((err)=>{

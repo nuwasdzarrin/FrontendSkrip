@@ -153,7 +153,7 @@ export default {
       formData.append("file", this.PDFs.file);
       try {
         var responPDF = await axios.post(
-          "http://localhost:58187/api/pdf/uploadPDF",
+          APIENDPOINT + "/pdf/uploadPDF",
           formData,
           getHeader()
         );
@@ -172,6 +172,7 @@ export default {
     postSign() {
       const authUser = JSON.parse(window.localStorage.getItem('lbUser'));
       let newSigns = {
+        id: this.Responses.IdSign,
         author: this.Signs.author,
         title: this.Signs.title,
         subject: this.Signs.subject,
@@ -179,12 +180,11 @@ export default {
         reason: this.Signs.reason,
         email: this.Signs.email,
         requestorId: authUser.userId,
-        issuerId: this.Issuers.selectIssuer,
-        status: "waiting"
+        issuerId: this.Issuers.selectIssuer
       };
       axios
         .put(
-          "http://localhost:58187/api/reqsign/" + this.Responses.IdSign,
+          APIENDPOINT + "/requestor/sign?id=" + this.Responses.IdSign,
           newSigns,
           getHeader()
         )

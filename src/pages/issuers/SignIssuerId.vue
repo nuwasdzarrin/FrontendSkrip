@@ -9,13 +9,14 @@
     </div>
     <div class="row row-second">
       <div class="col-sm-8">
-        <canvas id="the-canvas" style="border:1px  solid black"></canvas>
-        <!-- <embed
-          :src="`${Responses.signStat ? 'http://localhost:58187/UploadFile/output/sign_'+ Responses.namePDF : 'http://localhost:58187/UploadFile/input/'+ Responses.namePDF}`"
+        <canvas id="the-canvas" style="border:1px  solid black" v-if="Responses.status!='sign'"></canvas>
+        <embed
+          :src="PdfViewer.url"
           width="100%"
           height="1000px"
           type="application/pdf"
-        /> -->
+          v-if="Responses.status=='sign'"
+        />
       </div>
       <div class="col-sm-4 identitas">
         <div class="card">
@@ -73,7 +74,7 @@
              <div class="form-group">
                <label for="visible">visibilitas digital signature :&nbsp;&nbsp; </label>
                 <label class="radio-inline"><input type="radio" v-model="Signs.visible"  value=true checked>Yes</label>
-                <label for="space"> &nbsp;&nbsp;or&nbsp;&nbsp; </label>
+                <label for="space"> &nbsp;or&nbsp; </label>
                 <label class="radio-inline"><input type="radio" v-model="Signs.visible"  value=false>No</label>
              </div>
             <ul class="list-group list-group-flush">
@@ -81,10 +82,6 @@
               <li class="list-group-item">Sign Img selected : {{ Pics.selPic }}</li>
               <li class="list-group-item">Position of Sign: X= {{PdfViewer.positions.x}} , Y= {{PdfViewer.positions.y}}</li>
             </ul>
-            <!-- <div class="form-group">
-              <label for="label">location :</label>
-              <input type="text" class="form-control" v-model="Signs.location" />
-            </div> -->
           </div>
         </div>
         <br />
@@ -140,7 +137,7 @@ export default {
           y:''
         },
         pdfScale : 1,
-        url : "http://localhost:58187/api/uploadpdf?nameFile="
+        url : ''
       },
       Certs: {
         allCert: [],
@@ -190,7 +187,7 @@ export default {
       };
       axios
         .put(
-          APIENDPOINT + "/sign/" + this.Responses.IdSign,
+          APIENDPOINT + "/issuer/signReq?id=" + this.Responses.IdSign,
           newSigns,
           getHeader()
         )
@@ -206,6 +203,7 @@ export default {
           this.Signs.location = "";
           this.Signs.password = "";
           this.Certs.selCert = "";
+          this.PdfViewer.url = "http://localhost:58187/api/pdf/getSignPDF?signFile=sign_" + this.Responses.namePDF;
         })
         .catch(err => {
           throw err
@@ -288,14 +286,14 @@ export default {
     const userId = JSON.parse(window.localStorage.getItem('lbUser')).userId;
     var vim = this;
     axios
-      .get(APIENDPOINT + "/sign/" + this.$route.params.id, getHeader())
+      .get(APIENDPOINT + "/issuer/sign/detail?id=" + this.$route.params.id, getHeader())
       .then(res => {
         axios
-          .get(APIENDPOINT + "/uploadcert?memberId=" + userId, getHeader())
+          .get(APIENDPOINT + "/cert/getCert?memberId=" + userId, getHeader())
           .then(resp => {
             this.Certs.allCert = resp.data;
             axios
-              .get(APIENDPOINT + "/uploadpicsign?memberId=" + userId, getHeader())
+              .get(APIENDPOINT + "/picture/getPictureSign?memberId=" + userId, getHeader())
               .then(respo => {
                 this.Pics.pic = respo.data;
               })
@@ -316,9 +314,13 @@ export default {
         this.Responses.namePDF = res.data.pdfName;
         this.Responses.requestorId = res.data.requestorId;
         this.Responses.issuerId = res.data.issuerId;
-        this.Responses.status = "sign";
-        
-        vim.fetchPDF();
+        this.Responses.status = res.data.status;
+        if (res.data.status=='sign'){
+          this.PdfViewer.url = "http://localhost:58187/api/pdf/getSignPDF?signFile=sign_" + res.data.pdfName;  
+        } else {
+          this.PdfViewer.url = "http://localhost:58187/api/pdf/getPDF?nameFile=sign_";
+          vim.fetchPDF();
+        }
       })
       .catch((err) => {
         throw err

@@ -41,7 +41,7 @@ export default {
     },
     created: function() {
         const userId = JSON.parse(window.localStorage.getItem('lbUser')).userId
-        axios.get(APIENDPOINT + "/sign?issuerId=" + userId, getHeader())
+        axios.get(APIENDPOINT + "/issuer/sign?memberId=" + userId, getHeader())
         .then((res)=>{
             this.items = res.data
         }). catch((err)=>{

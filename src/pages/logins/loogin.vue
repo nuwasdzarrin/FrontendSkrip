@@ -2,7 +2,7 @@
   <div class="wrapper fadeInDown">
     <div id="formContent">
       <!-- Tabs Titles -->
-      <div class="fadeIn first">
+      <!-- <div class="fadeIn first">
         <img
           :src="require('@/assets/logoDS.png')"
           id="icon"
@@ -10,7 +10,7 @@
           height="50px"
           width="50px"
         />
-      </div>
+      </div> -->
       <div id="formHeader">
         <h4>Digital signature login</h4>
       </div>

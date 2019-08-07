@@ -1,8 +1,6 @@
-// UploadPDF.vue
-
 <template>
   <div>
-    <h3>Upload and Sign PDF</h3>
+    <h3>Sign PDF and Request Signature</h3>
     <div class="row row-centered row-second">
       <div class="col-sm-8">
         <form @submit.prevent="sendFile" enctype="multipart/form-data">
@@ -30,49 +28,86 @@
         </form>
       </div>
       <div class="col-sm-4">
-        <div class="card">
-          <div class="card-header">
-            <h5>Choose your certificate</h5>
-          </div>
-          <div class="card-body">
-            <select
-              v-model="Certs.selCert"
-              name="cert"
-              id="cert"
-              class="form-control"
-              tabindex="12"
-            >
-              <option
-                v-for="i in Certs.allCert"
-                :key="i.id"
-                :value="i.certificate"
-              >{{ i.certificate }}</option>
-            </select>
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item">Certificate selected : {{ Certs.selCert }}</li>
-              <li class="list-group-item">
-                or upload new :
-                <router-link :to="{ name: 'CertIssuer' }">certificate</router-link>
-              </li>
-            </ul>
-          </div>
-        </div>
+        <!-- row 1 kolom 4 kosong -->
       </div>
     </div>
     <!--   -->
-    <div class="row row-second" v-if="Responses.namePDF">
+    <div class="row row-second">
       <div class="col-sm-8">
         <div v-if="Responses.resSign" :class="`message ${Responses.signStat ? 'is-success' : 'is-danger'}`">
           <div class="message-body">{{ Responses.resSign }} to sign {{ Responses.namePDF }}</div>
         </div>
-        <embed
-          :src="`${Responses.signStat ? 'http://localhost:58187/UploadFile/output/sign_'+ Responses.namePDF : 'http://localhost:58187/UploadFile/input/'+ Responses.namePDF}`"
-          width="100%"
-          height="1000px"
-          type="application/pdf"
-        />
+        <canvas id="the-canvas" style="border:1px  solid black"></canvas>
+        
       </div>
       <div class="col-sm-4 identitas">
+        <div class="card">
+          <div class="card-header">
+            <h5>Signature Component</h5>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label for="label">Request to:</label>
+              <select
+                v-model="Issuers.selectIssuer"
+                name="issuer"
+                id="issuer"
+                class="form-control"
+                tabindex="12"
+              >
+                <option
+                  v-for="i in Issuers.allIssuer"
+                  :key="i.id"
+                  :value="i.memberId"
+                >{{ i.firstName + " " + i.lastName }}</option>
+              </select>
+            </div>
+              <div class="form-group">
+                  <label for="certificate">Select Certificate</label>
+                    <select
+                    v-model="Certs.selCert"
+                    name="cert"
+                    id="cert"
+                    class="form-control"
+                    tabindex="12"
+                    >
+                    <option
+                        v-for="i in Certs.allCert"
+                        :key="i.id"
+                        :value="i.certificate"
+                    >{{ i.certificate }}</option>
+                    </select>
+              </div>
+            <div class="form-group">
+              <label for="pic">Select Signature Pic</label>
+               <select
+                  v-model="Pics.selPic"
+                  name="pic"
+                  id="pic"
+                  class="form-control"
+                  tabindex="12"
+                >
+                  <option
+                    v-for="n in Pics.pic"
+                    :key="n.id"
+                    :value="n.namePic"
+                  >{{ n.namePic }}</option>
+                </select>
+             </div>
+             <div class="form-group">
+               <label for="visible">visibilitas digital signature :&nbsp;&nbsp; </label>
+                <label class="radio-inline"><input type="radio" v-model="Signs.visible"  value=true checked>Yes</label>
+                <label for="space"> &nbsp;or&nbsp; </label>
+                <label class="radio-inline"><input type="radio" v-model="Signs.visible"  value=false>No</label>
+             </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">Certificate selected : {{ Certs.selCert }}</li>
+              <li class="list-group-item">Sign Img selected : {{ Pics.selPic }}</li>
+              <li class="list-group-item">Position of Sign: X= {{PdfViewer.positions.x}} , Y= {{PdfViewer.positions.y}}</li>
+            </ul>
+          </div>
+        </div>
+        <br>
         <div class="card">
           <div class="card-header">
             <h5>Siganture Identity</h5>
@@ -134,6 +169,19 @@ export default {
 
   data() {
     return {
+        Pics:{
+            pic:[],
+            selPic:''
+      },
+      PdfViewer: {
+        position: null,
+        positions: {
+          x:'',
+          y:''
+        },
+        pdfScale : 1,
+        url : ''
+      },
       Certs: {
         allCert: [],
         selCert: ""
@@ -151,13 +199,18 @@ export default {
         reason: "",
         email: "",
         location: "",
-        password: ""
+        password: "",
+        visible: true
       },
       Responses: {
         namePDF: "",
         resSign: "",
         IdSign: "",
         signStat: false
+      },
+      Issuers: {
+        allIssuer: [],
+        selectIssuer: ""
       }
     };
   },
@@ -171,10 +224,11 @@ export default {
     async sendFile() {
       const authUser = JSON.parse(window.localStorage.getItem("lbUser"));
       const formData = new FormData();
+      var vim = this;
       formData.append("file", this.PDFs.file);
       try {
         var responPDF = await axios.post(
-          APIENDPOINT + "/uploadpdf",
+          APIENDPOINT + "/pdf/uploadPDF",
           formData,
           getHeader()
         );
@@ -183,6 +237,13 @@ export default {
         this.PDFs.message = "File has been Uploaded";
         this.PDFs.file = "";
         this.PDFs.error = false;
+
+        this.PdfViewer.url = "http://localhost:58187/api/pdf/getPDF?nameFile=" + responPDF.data.FileName;
+        
+        vim.fetchPDF();
+        var myImg = document.getElementById("the-canvas");
+        myImg.onmousedown = vim.GetCoordinates;
+        vim.PdfViewer.position = vim.FindPosition(myImg);
       } catch (err) {
         this.PDFs.message = "Something went wrong";
         this.PDFs.error = true;
@@ -190,6 +251,7 @@ export default {
     },
     postSign() {
       const userId = JSON.parse(window.localStorage.getItem('lbUser')).userId;
+      var vim = this;
       let newSigns = {
         author: this.Signs.author,
         title: this.Signs.title,
@@ -202,12 +264,16 @@ export default {
         certName: this.Certs.selCert,
         password: this.Signs.password,
         requestorId : userId,
-        issuerId : userId
+        issuerId : this.Issuers.selectIssuer,
+        picName : this.Pics.selPic,
+        posX : this.PdfViewer.positions.x,
+        posY : this.PdfViewer.positions.y,
+        visible : this.Signs.visible
       };
       // console.log(newSigns)
       axios
         .put(
-          APIENDPOINT + "/issuer/sign?id=" + this.Responses.IdSign,
+          APIENDPOINT + "/requestor/signSelf?id=" + this.Responses.IdSign,
           newSigns,
           getHeader()
         )
@@ -223,12 +289,85 @@ export default {
           this.Signs.location = "";
           this.Certs.selCert = "";
           this.Signs.password = "";
+
+          this.PdfViewer.url = "http://localhost:58187/api/pdf/getPDF?nameFile=sign_" + this.Responses.namePDF;
+          vim.fetchPDF();
         })
         .catch(err => {
           throw err
           this.Responses.signStat = false
           this.Responses.resSign = "Unsuccessful";
         });
+    },
+
+    fetchPDF() {
+      return import(
+        'pdfjs-dist/webpack'
+      ).
+        then(pdfjs => pdfjs.getDocument(this.PdfViewer.url)).
+        then(pdf => (this.displayPage(pdf, 1))).
+        then(pdf => (this.pdf = pdf))
+    },
+
+    renderPage(page) {
+      var scale = this.PdfViewer.pdfScale; // render with global pdfScale variable
+      var viewport = page.getViewport(scale);
+      var canvas = document.getElementById("the-canvas");
+      var context = canvas.getContext("2d");
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+      var renderContext = {
+        canvasContext: context,
+        viewport: viewport
+      };
+      page.render(renderContext);
+    },
+
+    displayPage(pdf, num) {
+      var vm = this;
+      pdf.getPage(num).then(function getPage(page) {
+        vm.renderPage(page);
+      });
+    },
+
+    FindPosition(oElement) {
+      if (typeof oElement.offsetParent != "undefined") {
+        for (
+          var posX = 0, posY = 0;
+          oElement;
+          oElement = oElement.offsetParent
+        ) {
+          posX += oElement.offsetLeft;
+          posY += oElement.offsetTop;
+        }
+        return [posX, posY];
+      } else {
+        return [oElement.x, oElement.y];
+      }
+    },
+
+    GetCoordinates(e) {
+      // console.log(e);
+      var PosX = 0;
+      var PosY = 0;
+      if (!e) e = window.event;
+      if (e.pageX || e.pageY) {
+        PosX = e.pageX;
+        PosY = e.pageY;
+      } else if (e.clientX || e.clientY) {
+        PosX =
+          e.clientX +
+          document.body.scrollLeft +
+          document.documentElement.scrollLeft;
+        PosY =
+          e.clientY +
+          document.body.scrollTop +
+          document.documentElement.scrollTop;
+      }
+      PosX = PosX - this.PdfViewer.position[0];
+      PosY = PosY - this.PdfViewer.position[1];
+      this.PdfViewer.positions.x = PosX;
+      this.PdfViewer.positions.y = PosY;
     }
   },
   created() {
@@ -237,6 +376,22 @@ export default {
       .get(APIENDPOINT + "/cert/getCert?memberId=" + userId, getHeader())
       .then(resp => {
         this.Certs.allCert = resp.data;
+        axios
+            .get(APIENDPOINT + "/picture/getPictureSign?memberId=" + userId, getHeader())
+            .then(respo => {
+              this.Pics.pic = respo.data;
+              axios
+                .get(APIENDPOINT + "/member/getissuer", getHeader())
+                .then(res => {
+                  this.Issuers.allIssuer = res.data;
+                })
+                .catch(err => {
+                  throw err
+                });
+            })
+            .catch(err => {
+              throw err;
+            });
       })
       .catch(err => {
         throw err
