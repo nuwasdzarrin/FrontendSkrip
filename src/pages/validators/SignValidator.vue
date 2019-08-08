@@ -1,5 +1,3 @@
-// UploadPDF.vue
-
 <template>
   <div>
       <h4>Sign PDF by Validator</h4>
@@ -107,8 +105,13 @@ export default {
   },
   methods: {
     postStatus() {
+      var app =0;
+      if (this.PDFs.status == 'approve') app=1;
+      else app=0;
+      console.log(app);
       let newSigns = {
-        status: this.PDFs.status
+        status: this.PDFs.status,
+        approval: app
       }
       axios.put(APIENDPOINT + "/validator/updateStatus?id=" + this.Responses.IdSign, newSigns, getHeader())
       .then(res => {
@@ -125,7 +128,6 @@ export default {
       })
       .catch((err)=>{
         throw err;
-        this.Responses.actStat = false;
       });
     }
   },
@@ -144,7 +146,7 @@ export default {
         this.Responses.issuerId = res.data.issuerId;
         this.Responses.reqId = res.data.requestorId;
         this.PDFs.status = res.data.status;
-        if (res.data.status == 'request'){
+        if (res.data.doubleSign === 1){
           this.url = "http://localhost:58187/api/pdf/getPDF?nameFile=sign_" + res.data.pdfName;
         } else {
           this.url = "http://localhost:58187/api/pdf/getPDF?nameFile=" + res.data.pdfName;

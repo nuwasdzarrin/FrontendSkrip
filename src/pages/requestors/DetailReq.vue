@@ -98,7 +98,8 @@ export default {
         if (res.data.status == 'sign'){
           this.url = "http://localhost:58187/api/pdf/getSignPDF?signFile=sign_" + res.data.pdfName;
         } else {
-          this.url = "http://localhost:58187/api/pdf/getPDF?nameFile=" + res.data.pdfName;
+          if (res.data.doubleSign===1) this.url = "http://localhost:58187/api/pdf/getPDF?nameFile=sign_" + res.data.pdfName;
+          else this.url = "http://localhost:58187/api/pdf/getPDF?nameFile=" + res.data.pdfName;
         }
         axios.get(APIENDPOINT + "/member/detail?memberId=" + this.Responses.issuerId, getHeader())
         .then((resp)=>{

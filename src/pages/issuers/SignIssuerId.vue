@@ -126,6 +126,7 @@ export default {
 
   data() {
     return {
+      doubleSign:0,
       Pics:{
         pic:[],
         selPic:''
@@ -185,9 +186,11 @@ export default {
         posY : this.PdfViewer.positions.y,
         visible : this.Signs.visible
       };
+      if (this.doubleSign==1) var uri = '/issuer/signReq?id=';
+      else var uri = '/issuer/sign?id=';
       axios
         .put(
-          APIENDPOINT + "/issuer/signReq?id=" + this.Responses.IdSign,
+          APIENDPOINT + uri + this.Responses.IdSign,
           newSigns,
           getHeader()
         )
@@ -315,11 +318,17 @@ export default {
         this.Responses.requestorId = res.data.requestorId;
         this.Responses.issuerId = res.data.issuerId;
         this.Responses.status = res.data.status;
-        if (res.data.status=='sign'){
+        this.doubleSign = res.data.doubleSign;
+        if (res.data.status==='sign'){
           this.PdfViewer.url = "http://localhost:58187/api/pdf/getSignPDF?signFile=sign_" + res.data.pdfName;  
         } else {
-          this.PdfViewer.url = "http://localhost:58187/api/pdf/getPDF?nameFile=sign_";
-          vim.fetchPDF();
+          if (res.data.doubleSign===1){
+            this.PdfViewer.url = "http://localhost:58187/api/pdf/getPDF?nameFile=sign_";
+            vim.fetchPDF();  
+          } else {
+            this.PdfViewer.url = "http://localhost:58187/api/pdf/getPDF?nameFile=";
+            vim.fetchPDF();
+          }
         }
       })
       .catch((err) => {
